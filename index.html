@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bharat Hardware Electrical &amp; Tools - Your Complete Hardware Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Header -->
+    <header class="header" id="main-header">
+        <div class="header-container">
+            <div class="header-top">
+                <div class="logo">
+                    <h1>🛠️ Bharat Hardware</h1>
+                    <p class="tagline">Electrical &amp; Tools</p>
+                </div>
+                
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search for products, brands, categories..." autocomplete="off">
+                    <button class="search-btn" onclick="performSearch()">🔍</button>
+                    <div class="search-suggestions" id="search-suggestions"></div>
+                </div>
+
+                <div class="header-actions">
+                    <button class="header-btn" onclick="toggleWishlistPage()">
+                        <span class="icon">❤️</span>
+                        <span class="label">Wishlist</span>
+                        <span class="badge" id="wishlist-count">0</span>
+                    </button>
+                    <button class="header-btn" onclick="toggleCart()">
+                        <span class="icon">🛒</span>
+                        <span class="label">Cart</span>
+                        <span class="badge" id="cart-count">0</span>
+                    </button>
+                    <button class="header-btn" onclick="toggleAccountMenu()">
+                        <span class="icon">👤</span>
+                        <span class="label">Account</span>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="nav-menu" id="nav-menu">
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰ Menu</button>
+                <ul class="nav-links">
+                    <li><a href="#" onclick="showPage('home')">🏠 Home</a></li>
+                    <li><a href="#" onclick="filterByCategory('Power Tools')">⚡ Power Tools</a></li>
+                    <li><a href="#" onclick="filterByCategory('Hand Tools')">🔨 Hand Tools</a></li>
+                    <li><a href="#" onclick="filterByCategory('Electrical Appliances')">💡 Electrical</a></li>
+                    <li><a href="#" onclick="filterByCategory('Hardware & Fasteners')">🔩 Hardware</a></li>
+                    <li><a href="#" onclick="filterByCategory('Plumbing')">🚰 Plumbing</a></li>
+                    <li><a href="#" onclick="filterByCategory('Safety Equipment')">🦺 Safety</a></li>
+                    <li><a href="#" onclick="showPage('orders')">📦 My Orders</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Homepage -->
+        <section id="page-home" class="page active">
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <h2>Welcome to Bharat Hardware</h2>
+                    <p>India's Most Trusted Hardware &amp; Tools Store</p>
+                    <button class="btn btn-primary" onclick="showPage('products')">Shop Now</button>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="section-header">
+                    <h2>🔥 Featured Products</h2>
+                    <a href="#" onclick="showPage('products')">View All →</a>
+                </div>
+                <div class="products-grid" id="featured-products"></div>
+
+                <div class="section-header">
+                    <h2>📂 Shop by Category</h2>
+                </div>
+                <div class="categories-grid" id="categories-grid"></div>
+
+                <div class="section-header" id="recently-viewed-header" style="display: none;">
+                    <h2>👁️ Recently Viewed</h2>
+                </div>
+                <div class="products-grid" id="recently-viewed-products"></div>
+            </div>
+        </section>
+
+        <!-- Products Listing Page -->
+        <section id="page-products" class="page">
+            <div class="container">
+                <div class="breadcrumb" id="breadcrumb"></div>
+                
+                <div class="products-layout">
+                    <!-- Sidebar Filters -->
+                    <aside class="filters-sidebar" id="filters-sidebar">
+                        <div class="filters-header">
+                            <h3>Filters</h3>
+                            <button class="btn-text" onclick="clearAllFilters()">Clear All</button>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Price Range</h4>
+                            <div class="price-range">
+                                <input type="range" id="price-min" min="0" max="50000" value="0" step="100">
+                                <input type="range" id="price-max" min="0" max="50000" value="50000" step="100">
+                                <div class="price-labels">
+                                    <span>₹<span id="price-min-label">0</span></span>
+                                    <span>₹<span id="price-max-label">50000</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Brand</h4>
+                            <div id="brand-filters"></div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Rating</h4>
+                            <div class="rating-filters">
+                                <label><input type="radio" name="rating" value="4" onchange="applyFilters()"> 4★ &amp; above</label>
+                                <label><input type="radio" name="rating" value="3" onchange="applyFilters()"> 3★ &amp; above</label>
+                                <label><input type="radio" name="rating" value="0" onchange="applyFilters()" checked> All Ratings</label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Availability</h4>
+                            <label><input type="checkbox" id="in-stock-only" onchange="applyFilters()"> In Stock Only</label>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Discount</h4>
+                            <div class="discount-filters">
+                                <label><input type="checkbox" value="50" class="discount-filter" onchange="applyFilters()"> 50% or more</label>
+                                <label><input type="checkbox" value="40" class="discount-filter" onchange="applyFilters()"> 40% or more</label>
+                                <label><input type="checkbox" value="30" class="discount-filter" onchange="applyFilters()"> 30% or more</label>
+                                <label><input type="checkbox" value="20" class="discount-filter" onchange="applyFilters()"> 20% or more</label>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Products Grid -->
+                    <div class="products-content">
+                        <div class="products-header">
+                            <div class="results-count" id="results-count"></div>
+                            <div class="sort-options">
+                                <label>Sort by:</label>
+                                <select id="sort-select" onchange="applyFilters()">
+                                    <option value="relevance">Relevance</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="rating">Rating: High to Low</option>
+                                    <option value="discount">Discount: High to Low</option>
+                                    <option value="name">Name: A to Z</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="comparison-bar" id="comparison-bar" style="display: none;">
+                            <div class="comparison-info">
+                                <span id="comparison-count">0</span> products selected for comparison
+                            </div>
+                            <button class="btn btn-primary" onclick="showComparisonModal()">Compare Now</button>
+                            <button class="btn btn-secondary" onclick="clearComparison()">Clear All</button>
+                        </div>
+
+                        <div class="products-grid" id="products-list"></div>
+                        
+                        <div class="pagination" id="pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Detail Page -->
+        <section id="page-product-detail" class="page">
+            <div class="container">
+                <div class="breadcrumb" id="product-breadcrumb"></div>
+                <div class="product-detail" id="product-detail-content"></div>
+            </div>
+        </section>
+
+        <!-- Wishlist Page -->
+        <section id="page-wishlist" class="page">
+            <div class="container">
+                <div class="page-title">
+                    <h2>❤️ My Wishlist</h2>
+                </div>
+                <div class="products-grid" id="wishlist-products"></div>
+            </div>
+        </section>
+
+        <!-- Cart Page -->
+        <section id="page-cart" class="page">
+            <div class="container">
+                <div class="page-title">
+                    <h2>🛒 Shopping Cart</h2>
+                </div>
+                <div class="cart-layout" id="cart-content"></div>
+            </div>
+        </section>
+
+        <!-- Checkout Page -->
+        <section id="page-checkout" class="page">
+            <div class="container">
+                <div class="page-title">
+                    <h2>Checkout</h2>
+                </div>
+                <div class="checkout-layout" id="checkout-content"></div>
+            </div>
+        </section>
+
+        <!-- Orders Page -->
+        <section id="page-orders" class="page">
+            <div class="container">
+                <div class="page-title">
+                    <h2>📦 My Orders</h2>
+                </div>
+                <div id="orders-list"></div>
+            </div>
+        </section>
+
+        <!-- Order Tracking Page -->
+        <section id="page-tracking" class="page">
+            <div class="container">
+                <div class="page-title">
+                    <h2>📍 Track Order</h2>
+                </div>
+                <div id="tracking-content"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div class="modal" id="comparison-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Compare Products</h3>
+                <button class="modal-close" onclick="closeModal('comparison-modal')">&times;</button>
+            </div>
+            <div class="modal-body" id="comparison-content"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="quick-view-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Quick View</h3>
+                <button class="modal-close" onclick="closeModal('quick-view-modal')">&times;</button>
+            </div>
+            <div class="modal-body" id="quick-view-content"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="image-modal">
+        <div class="modal-content modal-image">
+            <button class="modal-close" onclick="closeModal('image-modal')">&times;</button>
+            <div class="modal-body">
+                <button class="image-nav prev" onclick="navigateImage(-1)">‹</button>
+                <img id="modal-image" src="" alt="">
+                <button class="image-nav next" onclick="navigateImage(1)">›</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="login-modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>Login / Register</h3>
+                <button class="modal-close" onclick="closeModal('login-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="showAuthTab('login')">Login</button>
+                    <button class="auth-tab" onclick="showAuthTab('register')">Register</button>
+                </div>
+                <div id="login-form" class="auth-form">
+                    <input type="text" placeholder="Username" class="form-input" id="login-email">
+                    <input type="password" placeholder="Password" class="form-input" id="login-password">
+                    <div style="margin-bottom: 12px; font-size: 12px; color: var(--text-secondary);">
+                        <strong>Test Accounts:</strong><br>
+                        Admin: admin / admin123<br>
+                        Seller: seller1 / seller123<br>
+                        Customer: customer1 / pass123
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="handleLogin()">Login</button>
+                </div>
+                <div id="register-form" class="auth-form" style="display: none;">
+                    <input type="text" placeholder="Full Name" class="form-input" id="register-name">
+                    <input type="email" placeholder="Email" class="form-input" id="register-email">
+                    <input type="password" placeholder="Password" class="form-input" id="register-password">
+                    <button class="btn btn-primary btn-block" onclick="handleRegister()">Register</button>
+                </div>
+                <div class="guest-checkout">
+                    <p>Or</p>
+                    <button class="btn btn-secondary btn-block" onclick="proceedAsGuest()">Continue as Guest</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="address-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Address</h3>
+                <button class="modal-close" onclick="closeModal('address-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="address-form">
+                    <input type="text" placeholder="Full Name" class="form-input" id="addr-name" required>
+                    <input type="tel" placeholder="Phone Number" class="form-input" id="addr-phone" required>
+                    <input type="text" placeholder="Address Line 1" class="form-input" id="addr-line1" required>
+                    <input type="text" placeholder="Address Line 2" class="form-input" id="addr-line2">
+                    <div class="form-row">
+                        <input type="text" placeholder="City" class="form-input" id="addr-city" required>
+                        <input type="text" placeholder="State" class="form-input" id="addr-state" required>
+                    </div>
+                    <input type="text" placeholder="PIN Code" class="form-input" id="addr-pin" required>
+                    <select class="form-input" id="addr-type">
+                        <option value="Home">Home</option>
+                        <option value="Work">Work</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="addr-default"> Set as default address
+                    </label>
+                    <button type="submit" class="btn btn-primary btn-block">Save Address</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
